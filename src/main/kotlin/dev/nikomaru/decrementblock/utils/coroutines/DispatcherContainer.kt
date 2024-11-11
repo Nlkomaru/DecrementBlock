@@ -1,6 +1,6 @@
-package dev.nikomaru.template.utils.coroutines
+package dev.nikomaru.decrementblock.utils.coroutines
 
-import dev.nikomaru.template.Template
+import dev.nikomaru.decrementblock.DecrementBlock
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.coroutines.CoroutineContext
 
@@ -14,7 +14,7 @@ object DispatcherContainer {
     val async: CoroutineContext
         get() {
             if (asyncCoroutine == null) {
-                asyncCoroutine = AsyncCoroutineDispatcher(JavaPlugin.getPlugin(Template::class.java))
+                asyncCoroutine = AsyncCoroutineDispatcher(JavaPlugin.getPlugin(DecrementBlock::class.java))
             }
 
             return asyncCoroutine!!
@@ -26,7 +26,7 @@ object DispatcherContainer {
     val sync: CoroutineContext
         get() {
             if (syncCoroutine == null) {
-                syncCoroutine = MinecraftCoroutineDispatcher(JavaPlugin.getPlugin(Template::class.java))
+                syncCoroutine = MinecraftCoroutineDispatcher(JavaPlugin.getPlugin(DecrementBlock::class.java))
             }
 
             return syncCoroutine!!

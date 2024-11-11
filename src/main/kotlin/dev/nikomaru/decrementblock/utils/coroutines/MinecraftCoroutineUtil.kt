@@ -1,4 +1,4 @@
-package dev.nikomaru.template.utils.coroutines
+package dev.nikomaru.decrementblock.utils.coroutines
 
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext

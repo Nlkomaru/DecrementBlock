@@ -1,20 +1,29 @@
-package dev.nikomaru.template
+package dev.nikomaru.decrementblock
 
 import cloud.commandframework.annotations.AnnotationParser
+import cloud.commandframework.arguments.parser.ParserParameters
+import cloud.commandframework.arguments.standard.UUIDArgument.UUIDParser
 import cloud.commandframework.bukkit.CloudBukkitCapabilities
 import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator
 import cloud.commandframework.kotlin.coroutines.annotations.installCoroutineSupport
 import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
+import dev.nikomaru.decrementblock.command.DecrementCommand
+import dev.nikomaru.decrementblock.command.LocationParser
+import io.leangen.geantyref.TypeToken
+import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.*
 
-class Template : JavaPlugin() {
+
+class DecrementBlock : JavaPlugin() {
 
     companion object {
-        lateinit var plugin: Template
+        lateinit var plugin: DecrementBlock
             private set
     }
+
     override fun onEnable() {
         // Plugin startup logic
         plugin = this
@@ -33,7 +42,6 @@ class Template : JavaPlugin() {
             java.util.function.Function.identity()
         )
 
-
         if (commandManager.hasCapability(CloudBukkitCapabilities.ASYNCHRONOUS_COMPLETION)) {
             commandManager.registerAsynchronousCompletions()
         }
@@ -42,8 +50,14 @@ class Template : JavaPlugin() {
             SimpleCommandMeta.empty()
         }.installCoroutineSupport()
 
+        val parserRegistry = commandManager.parserRegistry()
+        parserRegistry.registerParserSupplier(
+            TypeToken.get(Location::class.java)
+        ) { _: ParserParameters? -> LocationParser() }
+
         with(annotationParser) {
             // write your command here
+            parse(DecrementCommand())
         }
     }
 }

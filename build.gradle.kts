@@ -5,6 +5,7 @@ plugins {
     id("xyz.jpenilla.run-paper") version "2.1.0"
     id("net.minecrell.plugin-yml.bukkit") version "0.6.0"
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.github.evestera.depsize") version "0.1.0"
 }
 
 group = "dev.nikomaru"
@@ -29,58 +30,65 @@ dependencies {
 
     library(kotlin("stdlib"))
 
-    compileOnly("com.github.MilkBowl", "VaultAPI", vaultVersion)
-
     implementation("cloud.commandframework", "cloud-core", cloudVersion)
-    implementation("cloud.commandframework", "cloud-kotlin-extensions", cloudVersion)
     implementation("cloud.commandframework", "cloud-paper", cloudVersion)
     implementation("cloud.commandframework", "cloud-annotations", cloudVersion)
+    implementation("cloud.commandframework", "cloud-kotlin-extensions", cloudVersion)
     implementation("cloud.commandframework", "cloud-kotlin-coroutines-annotations", cloudVersion)
     implementation("cloud.commandframework", "cloud-kotlin-coroutines", cloudVersion)
 
-    library("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.1")
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.7.1")
     implementation("org.jetbrains.kotlinx", "kotlinx-serialization-json", "1.5.1")
 
     library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-api", mccoroutineVersion)
     library("com.github.shynixn.mccoroutine", "mccoroutine-bukkit-core", mccoroutineVersion)
+
+    implementation("com.github.doyaaaaaken:kotlin-csv-jvm:1.9.2")
 }
 
 java {
-
-toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
+
+val pluginGroup = "dev.nikomaru.decrementblock"
 
 tasks {
-compileKotlin {
-kotlinOptions.jvmTarget = "17"
-kotlinOptions.javaParameters = true
-}
-compileTestKotlin {
-kotlinOptions.jvmTarget = "17"
-}
-build {
-dependsOn(shadowJar)
-}
+    compileKotlin {
+        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.javaParameters = true
+    }
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "17"
+    }
+    shadowJar{
+        relocate("cloud.commandframework", "$pluginGroup.shaded.cloud")
+        relocate("io.leangen.geantyref", "$pluginGroup.shaded.typetoken")
+    }
+    build {
+        dependsOn(shadowJar)
+    }
 }
 tasks.withType<JavaCompile>().configureEach {
-options.encoding = "UTF-8"
+    options.encoding = "UTF-8"
 }
 
 tasks {
-runServer {
-minecraftVersion("1.20.1")
-}
+    runServer {
+        minecraftVersion("1.20.1")
+    }
 }
 
 
 bukkit {
-    name = "Template" // need to change
+    name = "DecrementBlock" // need to change
     version = "miencraft_plugin_version"
-    website = "https://github.com/Nlkomaru/NoticeTemplate"  // need to change
+    website = "https://github.com/Nlkomaru/DecrementBlock"  // need to change
 
-    main = "$group.template.Template"  // need to change
+    main = "$group.decrementblock.DecrementBlock"  // need to change
 
     apiVersion = "1.20"
-    libraries = listOf("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0",
-        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0")
+    libraries = listOf(
+        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:2.11.0",
+        "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:2.11.0"
+    )
 }
